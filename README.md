@@ -85,6 +85,11 @@ Template for all users
 ---
 
 
+**Linkin Profiles:**  
+- [Jawahier Achmat](https://www.linkedin.com/in/jawahier-achmat-783bbb267/)
+- [Nikita Martin](https://www.linkedin.com/in/jawahier-achmat-783bbb267/)
+- [Moegamat Samsodien](https://www.linkedin.com/in/moegamatsamsodien/)
+- [Nooriya Shaik](https://www.linkedin.com/in/nooriya-shaik-bab7b8364/)
 
-- [Linkin Profile](https://www.linkedin.com/in/moegamatsamsodien/)
-- [Portfolio](https://plum165.github.io/portfolio/)
+**Portfolios**
+- [Moegamat Samsodien](https://plum165.github.io/portfolio/)
