@@ -14,7 +14,7 @@ Code the Halls❄
 | **Nooriya Shaik**   | Designer / Frontend Developer  | email@g.com |
 
 
-## 📧 Other Contact Info
+## 📧 Other Info
 
 
 **Linkin Profiles:**  
