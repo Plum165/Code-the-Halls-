@@ -19,7 +19,7 @@ Code the Halls❄
 
 **Linkin Profiles:**  
 - [Jawahier Achmat](https://www.linkedin.com/in/jawahier-achmat-783bbb267/)
-- [Nikita Martin](https://www.linkedin.com/in/jawahier-achmat-783bbb267/)
+- [Nikita Martin](https://www.linkedin.com/in/nikita-martin-17905630a/)
 - [Moegamat Samsodien](https://www.linkedin.com/in/moegamatsamsodien/)
 - [Nooriya Shaik](https://www.linkedin.com/in/nooriya-shaik-bab7b8364/)
 
