@@ -10,7 +10,7 @@ Code the Halls❄
 |----------|---------------------|-------------|
 | **Jawahier Achmat**   | Lead Backend Developer   | email@g.com |
 | **Nikita Martin**   | Designer / Backend Developer   | email@g.com |
-| **Moegamat Samsodien**   | Designer / Frontend Developer  | email@g.com |
+| **Moegamat Samsodien**   | Designer / Frontend Developer  | rashaadsm2004@gmail.com |
 | **Nooriya Shaik**   | Designer / Frontend Developer  | email@g.com |
 
 
