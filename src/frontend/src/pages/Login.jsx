@@ -15,7 +15,6 @@ export default function Login() {
     const user = username.trim().toLowerCase();
     if (!user || !password) return;   // block empty login
 
-    // Routing logic
     if (user === "bob") {
       navigate("/dashboard");
     } else {
