@@ -249,10 +249,23 @@ useEffect(() => {
           )}
         </div>
 
+        {/* INPUT */}
         <div className="chat-input-area">
-          <div className="file-upload-container">
-            <button onClick={() => fileInputRef.current.click()}>+</button>
-            <input type="file" ref={fileInputRef} onChange={handleFileUpload} multiple style={{ display: 'none' }} />
+           <div className="file-upload-container">
+            <button 
+              className="file-upload-btn"
+              onClick={() => fileInputRef.current.click()}
+              title="Upload file"
+            >
+              <span className="plus-icon">+</span>
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              multiple
+              style={{ display: 'none' }}
+            />
           </div>
           <AgentInput onSend={handleSend} />
         </div>
