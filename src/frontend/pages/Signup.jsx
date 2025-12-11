@@ -1,32 +1,7 @@
-// import React from 'react'
-
-
-
-// export const Signup = () => {
-//   return (
-//     <div>
-//         <div className="container">
-//         <div className='header'>Log-in</div>
-//             <div className="inputs">
-//                 <div className="input">
-//                     <text className="Name">User</text>
-//                     <input type="text" className="text" />
-//                 </div>
-//                 <div className="input">
-//                     <text className="Name">Password</text>
-//                     <input type="text" className="text" />
-//                 </div>
-//                 <div className="submit">Login</div>
-//                  <div className="submit">Sign-up</div>
-//             </div>
-//         </div>
-//     </div>
-   
-//   )
-// }
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -34,6 +9,8 @@ export default function Signup() {
     username: "",
     email: "",
     password: "",
+    age: "",
+    gender: "",
   });
 
   const handleChange = (e) => {
@@ -43,17 +20,19 @@ export default function Signup() {
   const handleSignup = (e) => {
     e.preventDefault();
 
-    // Prototype action: simply redirect to login
-    if (form.username && form.email && form.password) {
+    if (form.username && form.email && form.password ) {
       alert("Account created!");
-      navigate("/");
+      navigate("/chat");
     }
+    else {
+    alert("Please fill in all fields");}
   };
 
+
   return (
-    <div className="login-container">
-      <form className="login-box" onSubmit={handleSignup}>
-        <h2>Create Account</h2>
+    <div className="signup-container">
+      <form className="signup-box" onSubmit={handleSignup}>
+        <h2>Join a community of love and support</h2>
 
         <input
           type="text"
@@ -71,18 +50,39 @@ export default function Signup() {
           onChange={handleChange}
         />
 
-        <input
+       
+         <input
+          type="age"
+          name="age"
+          placeholder="Age"
+          value={form.age}
+          onChange={handleChange}
+        />  
+         <input
+          type="gender"
+          name="gender"
+          placeholder="Gender"
+          value={form.gender}
+          onChange={handleChange}
+        />  
+
+         <input
           type="password"
           name="password"
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
-        />
+        />  
 
-        <button type="submit">Sign Up</button>
 
-        <p style={{ marginTop: "10px" }}>
-          Already have an account? <Link to="/">Login</Link>
+         <p style={{ marginTop: "10px" }}>
+          For additional support submit  <text className="login-link"> Health Form</text>
+        </p>
+
+        <button type="submit" >Sign Up</button>
+
+        <p style={{ marginTop: "20px" }}>
+          Already have an account? <Link to="/" className="login-link">Login</Link>
         </p>
       </form>
     </div>

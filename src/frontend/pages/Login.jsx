@@ -1,15 +1,23 @@
 import { Link } from "react-router-dom";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Protea from "../components/Assets/Protea.jpg";
 
 export default function Login() {
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (username.trim()) {
+
+    const user = username.trim().toLowerCase();
+    if (!user || !password) return;   // block empty login
+
+    if (user === "bob") {
+      navigate("/dashboard");
+    } else {
       navigate("/chat");
     }
   };
@@ -17,19 +25,35 @@ export default function Login() {
   return (
     <div className="login-container">
       <form className="login-box" onSubmit={handleLogin}>
-        <h2>Chat Agent Login</h2>
+        
+        <div className="heading">
+          <h2>Welcome to VEA</h2>
+          <img src={Protea} alt="VEA logo" style={{ width: "40px"}} />
+        </div>
+
         <input 
           type="text"
-          placeholder="Enter username..."
+          placeholder="Enter username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
+
+        <input 
+          type="password"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
         <button type="submit">Login</button>
-      </form>
-      <p style={{ marginTop: "10px" }}>
-        Don’t have an account? <Link to="/signup">Sign up</Link>
+
+        <p style={{ marginTop: "20px" }}>
+          Don’t have an account? <Link to="/signup" className="signup-link">Sign up</Link>
         </p>
 
+      </form>
     </div>
   );
 }

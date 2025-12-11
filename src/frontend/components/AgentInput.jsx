@@ -1,25 +1,33 @@
 import { useState } from "react";
 
 export default function AgentInput({ onSend }) {
-  const [input, setInput] = useState("");
+  const [text, setText] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (input.trim()) {
-      onSend(input);
-      setInput("");
+  const handleSend = () => {
+    if (text.trim()) {
+      onSend(text);
+      setText("");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { // Enter without Shift
+      e.preventDefault(); // Prevent newline in input
+      handleSend();
     }
   };
 
   return (
-    <form className="chat-input" onSubmit={handleSubmit}>
+    <div className="chat-input">
+    
       <input
         type="text"
         placeholder="Type your message..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onKeyDown={handleKeyDown} // <-- added this
       />
-      <button type="submit">Send</button>
-    </form>
+      <button onClick={handleSend}>Send</button>
+    </div>
   );
 }

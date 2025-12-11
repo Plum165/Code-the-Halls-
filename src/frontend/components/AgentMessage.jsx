@@ -1,4 +1,4 @@
-export default function AgentMessage({ sender, text, file }) {
+export default function AgentMessage({ sender, text, file, recorded, mockConsent }) {
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -7,9 +7,17 @@ export default function AgentMessage({ sender, text, file }) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  // Determine CSS classes
+  let messageClass = `chat-message ${sender}`;
+  if (recorded) messageClass += ' recorded';
+  if (mockConsent) messageClass += ' mock-consent';
+  if (sender === "system") {
+  return <div className="system-message">{text}</div>;
+}
+
   return (
     <>
-      <div className={`chat-message ${sender}`}>
+      <div className={messageClass}>
         {text}
       </div>
       
@@ -26,3 +34,4 @@ export default function AgentMessage({ sender, text, file }) {
     </>
   );
 }
+
