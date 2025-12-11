@@ -19,7 +19,3 @@ Many survivors of gender-based violence face barriers such as fear, stigma, or l
 
 ```
 
-## 📌 Future Improvements
-``` c
-// TODO: Mention ideas or features you’d add if given more time.
-```
