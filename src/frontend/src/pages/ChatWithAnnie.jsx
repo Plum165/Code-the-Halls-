@@ -7,41 +7,49 @@ import Protea from "../components/Assets/Protea.jpg";
 
 export default function ChatWithAnnie() {
   const [messages, setMessages] = useState([
-    { sender: "annie", text: "Hi… I don’t know if I’m doing this right." }
+    { sender: "annie", text: "Connected to Annie's chat" }
   ]);
-  const [showSupportDialog, setShowSupportDialog] = useState(false);
-  const [isInProfessionalMode, setIsInProfessionalMode] = useState(false);
+  const [victimIndex, setVictimIndex] = useState(0);
   const fileInputRef = useRef(null);
-  const [popupNotification, setPopupNotification] = useState(null);
-  const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
+  const navigate = useNavigate();
 
+  const today = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
 
-  // Simulate Annie replying in a troubled way
+  const victimScript = [
+    { id: "victim_intro_response", sender: "victim", text: "Hi… I’m not really sure how to start. Things have just been really hard lately." },
+    { id: "victim_safety_response_safe", sender: "victim", text: "No… I’m not in immediate danger right now. I’m safe at the moment." },
+    { id: "victim_safe_followup", sender: "victim", text: "I just feel overwhelmed. I don’t know what’s normal anymore." },
+    { id: "victim_support_choice_talk", sender: "victim", text: "I think… I just need to talk about what’s been happening." },
+    { id: "victim_open_up", sender: "victim", text: "It’s been going on for a while. I’ve been feeling anxious all the time and I don’t feel like myself." },
+    { id: "victim_follow_1_response", sender: "victim", text: "A few months ago, things started changing. I didn’t notice at first, but it’s been getting worse." },
+    { id: "victim_not_safe_followup", sender: "victim", text: "I don’t want to call anyone yet… I just need help figuring out what to do." },
+    { id: "victim_support_choice_options", sender: "victim", text: "Maybe we can look at support options first. I’m not sure where to even start." },
+    { id: "victim_choose_option", sender: "victim", text: "Maybe we can talk through what I’m feeling first. I’m not ready for hotlines yet." }
+  ];
+
   const handleSend = (text) => {
-   
-  setMessages(prev => [
-    ...prev,
-    { sender: "bob", text, recorded: isRecording }
-  ]);
+    // Add Bob message
+    setMessages(prev => [
+      ...prev,
+      { sender: "bob", text, recorded: isRecording }
+    ]);
 
-  setTimeout(() => {
-    const troubledReplies = [
-      "I… I just feel like nothing’s helping.",
-      "Sometimes I don’t even know why I feel like this.",
-      "I’m scared I’m going to mess everything up.",
-      "I don’t know if I can handle this…"
-    ];
-    const reply = troubledReplies[Math.floor(Math.random() * troubledReplies.length)];
-    setMessages(prev => [...prev, { sender: "annie", text: reply, recorded: false }]);
-  }, 1000);
-};
-const today = new Date().toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "short",
-  day: "numeric"
-});
-
+    // Add next victim scripted message
+    if (victimIndex < victimScript.length) {
+      setTimeout(() => {
+        setMessages(prev => [
+          ...prev,
+          victimScript[victimIndex]
+        ]);
+        setVictimIndex(victimIndex + 1);
+      }, 700);
+    }
+  };
 
   const handleFileUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -53,101 +61,48 @@ const today = new Date().toLocaleDateString("en-US", {
         uploadedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         file
       };
-      setMessages((prev) => [...prev, { sender: "bob", text: `Uploaded file: ${file.name}`, file: fileObj }]);
-
+      setMessages(prev => [...prev, { sender: "bob", text: `Uploaded file: ${file.name}`, file: fileObj }]);
       setTimeout(() => {
-        setMessages((prev) => [...prev, { sender: "annie", text: `I see the file "${file.name}". Thank you for sharing.` }]);
+        setMessages(prev => [...prev, { sender: "annie", text: `I see the file "${file.name}". Thank you for sharing.` }]);
       }, 500);
     });
-
     e.target.value = null;
   };
 
-  const handleSupportResponse = (response) => {
-    if (response === 'yes') {
-      setIsInProfessionalMode(true);
-      setShowSupportDialog(false);
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          sender: "professional",
-          text: "Thank you for reaching out. I'm here to listen and support you. Can you tell me more about what's troubling you?"
-        }]);
-      }, 500);
-    } else {
-      setShowSupportDialog(false);
-      setTimeout(() => {
-        setMessages(prev => [...prev, { sender: "annie", text: "Okay… maybe later." }]);
-      }, 500);
-    }
-  };
-
   const handleRecordSession = () => {
-  // Bob requests to record
-  setMessages(prev => [
-    ...prev,
-    { sender: "bob", text: "Requesting to record a session...", recorded: true }
-  ]);
-
-  // Mock Annie's consent message
-  setTimeout(() => {
     setMessages(prev => [
       ...prev,
-      { sender: "annie", text: "Annie gave Permission to record session", recorded: false, mockConsent: true },
-      { sender: "system", text: "------------ Session is now being recorded -----------", recorded: true } // <-- new notification
+      { sender: "bob", text: "Requesting to record a session...", recorded: true }
     ]);
-
-    setIsRecording(true); // future messages are "recorded"
-  }, 1000);
-};
-
-const handleExportPDF = () => {
-  const doc = new jsPDF();
-  let y = 10;
-
-  messages.forEach(msg => {
-    const prefix = msg.sender === "bob" ? "BOB: " : "ANNIE: ";
-    const text = prefix + msg.text;
-
-    // Color for PDF: recorded messages (after consent) are blue
-    const color = msg.recorded ? [0, 102, 204] : [0, 0, 0];
-    doc.setTextColor(...color);
-
-    doc.text(text, 10, y);
-    y += 10;
-    if (y > 280) {
-      doc.addPage();
-      y = 10;
-    }
-  });
-
-  doc.save("chat_with_annie.pdf");
-};
-
-
-useEffect(() => {
-  // Trigger Jake alert after 6 seconds
-  const timer = setTimeout(() => {
-    setPopupNotification({
-      from: "Jake",
-      message: "AI detected unusual emotional patterns from Jake.",
-      urgency: "yellow"
-    });
-
-    // Auto-dismiss after 5 sec
     setTimeout(() => {
-      setPopupNotification(null);
-    }, 10000);
+      setMessages(prev => [
+        ...prev,
+        { sender: "annie", text: "Annie gave Permission to record session", recorded: false, mockConsent: true },
+        { sender: "system", text: "------------ Session is now being recorded -----------", recorded: true }
+      ]);
+      setIsRecording(true);
+    }, 1000);
+  };
 
-  }, 6000);
-
-  return () => clearTimeout(timer);
-}, []);
-
-
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    let y = 10;
+    messages.forEach(msg => {
+      const prefix = msg.sender === "bob" ? "BOB: " : msg.sender === "annie" || msg.sender === "victim" ? "VICTIM: " : "SYSTEM: ";
+      const text = prefix + msg.text;
+      const color = msg.recorded ? [0, 102, 204] : [0, 0, 0];
+      doc.setTextColor(...color);
+      doc.text(text, 10, y);
+      y += 10;
+      if (y > 280) {
+        doc.addPage();
+        y = 10;
+      }
+    });
+    doc.save("chat_with_annie.pdf");
+  };
 
   return (
-      
-
     <div className="chat-agent-container">
       {/* Sidebar */}
       <div className="chat-sidebar">
@@ -168,90 +123,39 @@ useEffect(() => {
       </div>
 
       {/* Main Chat Area */}
-     {popupNotification && (
-      <div className={`popup-notification ${popupNotification.urgency}`}>
-        <div>
-          <strong>⚠ New Alert: {popupNotification.from}</strong>
-          <p>{popupNotification.message}</p>
-        </div>
-        <button className="close-btn" onClick={() => setPopupNotification(null)}>✕</button>
-      </div>
-    )}
       <div className="chat-main">
         <div className="chat-header">
-            <div className="chat-header-left" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-  <h3 style={{ margin: 0 }}>
-    Annie Chat {isInProfessionalMode && "👨‍⚕️ Professional Support"}
-  </h3>
-  <img
-    src={Protea}
-    alt="VEA logo"
-    style={{ width: "40px", transform: "rotate(55deg)" }}
-  />
-  <div className="chat-info" style={{ fontSize: "12px", color: "#555", marginTop: "2px" }}>
-    {today}
-  </div>
-</div>
-
-
-
-
-            <div className="chat-header-right">
-              <div className="chat-header-right">
-                <button className="home-button" onClick={() => navigate("/dashboard")}>
-                  ⌂ Home
-                </button>
-                
-                <button className="record-button" onClick={handleRecordSession}>
-                  🔴 Record
-                </button>
-
-                {isRecording && (
-                  <button className="export-button" onClick={handleExportPDF}>
-                    📄 Export 
-                  </button>
-                )}
-              </div>
-
+          <div className="chat-header-left" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <h3 style={{ margin: 0 }}>Annie Chat</h3>
+            <img src={Protea} alt="VEA logo" style={{ width: "40px", transform: "rotate(55deg)" }} />
+            <div className="chat-info" style={{ fontSize: "12px", color: "#555", marginTop: "2px" }}>
+              {today}
             </div>
           </div>
 
-         <div className="chat-window">
-  {messages.map((msg, i) => (
-    <AgentMessage
-      key={i}
-      sender={
-        msg.sender === "bob"
-          ? "user"
-          : msg.sender === "annie"
-          ? "bot"
-          : "professional"
-      }
-      text={msg.text}
-      file={msg.file}
-      recorded={msg.recorded}
-      mockConsent={msg.mockConsent}
-    />
-  ))}
+          <div className="chat-header-right">
+            <button className="home-button" onClick={() => navigate("/dashboard")}>⌂ Home</button>
+            <button className="record-button" onClick={handleRecordSession}>🔴 Record</button>
+            {isRecording && <button className="export-button" onClick={handleExportPDF}>📄 Export</button>}
+          </div>
+        </div>
 
-
-
-
-          {showSupportDialog && (
-            <div className="support-dialog">
-              <h4>Professional Support Available</h4>
-              <p>Annie seems to be going through a difficult time. Would you like to enter support mode?</p>
-              <div className="support-buttons">
-                <button onClick={() => handleSupportResponse('yes')}>Yes</button>
-                <button onClick={() => handleSupportResponse('no')}>No</button>
-              </div>
-            </div>
-          )}
+        <div className="chat-window">
+          {messages.map((msg, i) => (
+            <AgentMessage
+              key={i}
+              sender={msg.sender === "bob" ? "user" : msg.sender === "annie" || msg.sender === "victim" ? "bot" : "system"}
+              text={msg.text}
+              file={msg.file}
+              recorded={msg.recorded}
+              mockConsent={msg.mockConsent}
+            />
+          ))}
         </div>
 
         {/* INPUT */}
         <div className="chat-input-area">
-           <div className="file-upload-container">
+          <div className="file-upload-container">
             <button 
               className="file-upload-btn"
               onClick={() => fileInputRef.current.click()}

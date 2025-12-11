@@ -129,7 +129,7 @@ export default function ChatAgent() {
     {
       id: "intro",
       sender: "professional",
-      text: "Hello, my name is Dr. Bob Snyman. I’m a counsellor specialising in supporting survivors of gender-based violence. Thank you for reaching out — that takes courage. This is a safe and confidential space. How can I support you today?",
+      text: "Hello, my name is Dr. Bob Snyman. I’m a counsellor specialising in supporting survivors of gender-based violence. Thank you for reaching out, that takes courage. This is a safe and confidential space. How can I support you today?",
     },
 
     // SAFETY CHECK
