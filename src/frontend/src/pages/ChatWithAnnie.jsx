@@ -86,8 +86,8 @@ export default function ChatWithAnnie() {
   setTimeout(() => {
     setMessages(prev => [
       ...prev,
-      { sender: "annie", text: "I understand. You may record this session.", recorded: false, mockConsent: true },
-      { sender: "system", text: "📹 Session is now being recorded.", recorded: true } // <-- new notification
+      { sender: "annie", text: "Annie gave Permission to record session", recorded: false, mockConsent: true },
+      { sender: "system", text: "------------ Session is now being recorded -----------", recorded: true } // <-- new notification
     ]);
 
     setIsRecording(true); // future messages are "recorded"
@@ -180,16 +180,16 @@ useEffect(() => {
             <div className="chat-header-right">
               <div className="chat-header-right">
                 <button className="home-button" onClick={() => navigate("/dashboard")}>
-                  ⬅ Home
+                  ⌂ Home
                 </button>
                 
                 <button className="record-button" onClick={handleRecordSession}>
-                  📹 Record Session
+                  🔴 Record
                 </button>
 
                 {isRecording && (
                   <button className="export-button" onClick={handleExportPDF}>
-                    📄 Export PDF
+                    📄 Export 
                   </button>
                 )}
               </div>
