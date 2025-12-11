@@ -24,7 +24,7 @@ Follow the SETUP.md
 // TODO: Link your demo video and PowerPoint here
 
 Check out the Demos: 
-- [Demo Video](../demo/demo.mp4)
+- [Demo Video](https://vimeo.com/manage/videos/1145755896)
 ```
 
 ## 📌 Notes
