@@ -36,6 +36,11 @@ export default function ChatWithAnnie() {
     setMessages(prev => [...prev, { sender: "annie", text: reply, recorded: false }]);
   }, 1000);
 };
+const today = new Date().toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric"
+});
 
 
   const handleFileUpload = (e) => {
@@ -183,7 +188,12 @@ useEffect(() => {
     alt="VEA logo"
     style={{ width: "40px", transform: "rotate(55deg)" }}
   />
+  <div className="chat-info" style={{ fontSize: "12px", color: "#555", marginTop: "2px" }}>
+    {today}
+  </div>
 </div>
+
+
 
 
             <div className="chat-header-right">
