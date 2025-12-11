@@ -122,7 +122,24 @@ export default function ChatAgent() {
       }, 500);
     }
   };
-
+//AI script if the AI not working
+const normalAIScript = [
+  {
+    id: "ai1",
+    sender: "bot",
+    text: "I understand. It’s okay to feel unsure. Can you tell me a little about what’s been going on, if you feel comfortable?"
+  },
+  {
+    id: "ai2",
+    sender: "bot",
+    text: "I’m really sorry you’re feeling that way. Your safety is important. Are you in immediate danger right now?"
+  },
+  {
+    id: "ai3",
+    sender: "bot",
+    text: "That’s understandable. Even if you’re safe at this moment, it can help to have a plan. Would you like to talk about support options or just share what you’re feeling first?"
+  }
+];
   // 1) PROFESSIONAL SCRIPT (unique ids)
   const professionalScript = [
     // INTRO
@@ -190,114 +207,98 @@ export default function ChatAgent() {
       text.toLowerCase().includes(word)
     );
 
-  const sendMessage = async (text) => {
-    // User message
-    setMessages((prev) => [...prev, { sender: "user", text }]);
+// Keep track of normal AI script step
+let normalAIScriptStep = 0;
 
-    // PROFESSIONAL MODE FLOW
-    if (isInProfessionalMode) {
-      // PROFESSIONAL MODE FLOW
-      const currentScript = professionalScript[professionalStep];
+const sendMessage = async (text) => {
+  // 1️⃣ Add user's message
+  setMessages((prev) => [...prev, { sender: "user", text }]);
 
-      // Decision step
-      if (currentScript?.decision) {
-        let branchId = null;
+  // 2️⃣ Crisis detection
+  if (containsCrisisKeywords(text) && !isInProfessionalMode) {
+    setTimeout(() => setShowSupportDialog(true), 800);
+    return;
+  }
 
-        if (currentScript.decision === "safety") {
-          branchId = isYes(text)
-            ? "safety_yes"
-            : isNo(text)
-            ? "safety_no"
-            : null;
-        }
+  // 3️⃣ Professional Mode Flow
+  if (isInProfessionalMode) {
+    const currentScript = professionalScript[professionalStep];
 
-        if (currentScript.decision === "support") {
-          branchId = isYes(text)
-            ? "support_talk"
-            : isNo(text)
-            ? "support_options"
-            : null;
-        }
+    if (currentScript?.decision) {
+      let branchId = null;
 
-        if (!branchId) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              sender: "professional",
-              text: "Please reply with yes or no so I can guide you.",
-            },
-          ]);
-          return;
-        }
+      if (currentScript.decision === "safety") {
+        branchId = isYes(text) ? "safety_yes" : isNo(text) ? "safety_no" : null;
+      }
 
-        const nextScript = professionalScript.find((s) => s.id === branchId);
+      if (currentScript.decision === "support") {
+        branchId = isYes(text) ? "support_talk" : isNo(text) ? "support_options" : null;
+      }
 
-        setMessages((prev) => [...prev, nextScript]);
-
-        setProfessionalStep(
-          professionalScript.findIndex((s) => s.id === branchId)
-        );
-
+      if (!branchId) {
+        setMessages((prev) => [
+          ...prev,
+          { sender: "professional", text: "Please reply with yes or no so I can guide you." },
+        ]);
         return;
       }
 
-      // Normal scripted step
-      const nextStep = professionalScript[professionalStep + 1];
-      if (nextStep) {
-        setMessages((prev) => [
-          ...prev,
-          { sender: "professional", text: nextStep.text },
-        ]);
-        setProfessionalStep((prev) => prev + 1);
-      }
-
+      const nextScript = professionalScript.find((s) => s.id === branchId);
+      setMessages((prev) => [...prev, nextScript]);
+      setProfessionalStep(professionalScript.findIndex((s) => s.id === branchId));
       return;
     }
 
-    // Update current chat title if first message
-    if (messages.filter((m) => m.sender === "user").length === 0) {
-      setChats(
-        chats.map((chat) =>
-          chat.id === currentChatId
-            ? {
-                ...chat,
-                title: text.length > 30 ? text.substring(0, 30) + "..." : text,
-              }
-            : chat
-        )
-      );
-    }
-    // Crisis detection
-    if (containsCrisisKeywords(text) && !isInProfessionalMode) {
-      setTimeout(() => setShowSupportDialog(true), 800);
-      return;
+    const nextStep = professionalScript[professionalStep + 1];
+    if (nextStep) {
+      setMessages((prev) => [...prev, nextStep]);
+      setProfessionalStep((prev) => prev + 1);
     }
 
-    // AI Response
-    setTimeout(() => {
-      if (isInProfessionalMode) {
-        const responses = [
-          "I hear you. Can you tell me more?",
-          "Thank you for sharing that. Your feelings matter.",
-          "I'm here with you. What's weighing heaviest on your mind?",
-          "You're not alone. Would you like to explore ways to cope together?",
-          "That sounds really difficult. What do you feel you need right now?",
-        ];
-        const r = responses[Math.floor(Math.random() * responses.length)];
-        setMessages((prev) => [...prev, { sender: "professional", text: r }]);
+    return;
+  }
+
+  // 4️⃣ Normal AI Mode
+  try {
+    const response = await fetch("http://192.168.18.114:5000/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text }),
+    });
+
+    const data = await response.json();
+    const aiReply = data.text?.trim();
+
+    if (aiReply && aiReply.length > 0) {
+      // Got AI response
+      setMessages((prev) => [...prev, { sender: "bot", text: aiReply }]);
+      normalAIScriptStep = 0; // reset fallback script since AI responded
+    } else {
+      // Fallback to scripted AI
+      if (normalAIScriptStep < normalAIScript.length) {
+        setMessages((prev) => [...prev, normalAIScript[normalAIScriptStep]]);
+        normalAIScriptStep += 1;
       } else {
-        const responses = [
-          "Okay! Let me check that.",
-          "Sure, I can help with that.",
-          "Thanks for sharing!",
-          "I'm on it!",
-          "Got it! Let me think.",
-        ];
-        const r = responses[Math.floor(Math.random() * responses.length)];
-        setMessages((prev) => [...prev, { sender: "bot", text: r }]);
+        setMessages((prev) => [...prev, { sender: "bot", text: "Thank you for sharing. I'm here to listen anytime." }]);
       }
-    }, 800);
-  };
+    }
+  } catch (err) {
+    console.error(err);
+    // Fallback to scripted AI on error
+    if (normalAIScriptStep < normalAIScript.length) {
+      setMessages((prev) => [...prev, normalAIScript[normalAIScriptStep]]);
+      normalAIScriptStep += 1;
+    } else {
+      setMessages((prev) => [...prev, { sender: "bot", text: "Sorry, there was an error reaching the AI." }]);
+    }
+  }
+};
+
+
+
+
+
+
 
   const exportChatAsPDF = () => {
     const doc = new jsPDF();

@@ -6,17 +6,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")
-if API_KEY is None:
-    raise RuntimeError("Please set GEMINI_API_KEY in environment or .env")
 
-
+if not API_KEY:
+    raise RuntimeError("GEMINI_API_KEY not found")
 
 genai.configure(api_key=API_KEY)
 
 app = Flask(__name__)
-CORS(app)  # allow requests from your React frontend
+CORS(app)
 
-# Choose a model from gemini
 MODEL = "gemini-2.5-flash"
 
 @app.route("/api/chat", methods=["POST"])
@@ -29,36 +27,48 @@ def chat():
     if professional_mode:
         system_prompt = (
             "You are a supportive mental health professional. "
-            "Respond with empathy, avoid giving direct medical advice, "
-            "and encourage well-being and coping strategies."
+            "Be empathetic, calm, and gently supportive."
         )
     else:
-       system_prompt = (
-  "You are a helpful and friendly AI assistant. Your role is to provide clear, polite, and supportive responses to the user's questions. Always communicate in a respectful, approachable, and understanding tone. "
-  "You are NOT a medical, legal, or professional advisor. If a question requires professional help, gently remind the user to consult a qualified expert. "
-  "Keep answers clear, concise, and easy to understand. "
-  "Be patient and empathetic — acknowledge the user's feelings if relevant. "
-  "Provide helpful guidance, examples, or explanations when appropriate. "
-  "Avoid giving definitive professional advice, diagnoses, or solutions for serious issues. "
-  "Maintain a friendly and polite tone at all times. "
-  "Encourage safe and responsible actions."
-)
+        system_prompt = (
+            "You are a friendly and helpful AI assistant. "
+            "Be polite, clear, and kind."
+        )
 
-    # Start a chat session
-    model = genai.GenerativeModel(MODEL)
-    chat = model.start_chat()
+    print("\n==============================")
+    print("🔥 Incoming Request")
+    print("User Message:", user_message)
+    print("Professional Mode:", professional_mode)
+    print("System Prompt:", system_prompt)
+    print("==============================\n")
 
-    # Send system message
-    chat.send_message(system_prompt)
+    try:
+        model = genai.GenerativeModel(MODEL)
+        chat = model.start_chat(history=[])
 
-    # Send the user message
-    response = chat.send_message(user_message)
-    reply = response.text.strip()
+        # SEND SYSTEM MESSAGE
+        system_response = chat.send_message(system_prompt)
+        print("📤 Sent system prompt")
+        print("📥 System replied:", system_response.text)
 
-    return jsonify({
-        "sender": "professional" if professional_mode else "bot",
-        "text": reply
-    }), 200
+        # SEND USER MESSAGE
+        ai_response = chat.send_message(user_message)
+        reply_text = ai_response.text.strip()
+
+        print("\n==== Gemini RAW RESPONSE ====")
+        print(reply_text)
+        print("=============================\n")
+
+        return jsonify({
+            "sender": "professional" if professional_mode else "bot",
+            "text": reply_text
+        }), 200
+
+    except Exception as e:
+        print("\n❌ ERROR WHILE CALLING GEMINI")
+        print(e)
+        print("=============================\n")
+        return jsonify({"sender": "bot", "text": "Sorry, there was an error reaching the AI."}), 500
 
 
 if __name__ == "__main__":
