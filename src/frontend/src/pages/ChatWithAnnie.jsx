@@ -3,6 +3,7 @@ import AgentMessage from "../components/AgentMessage";
 import AgentInput from "../components/AgentInput";
 import { useNavigate } from "react-router-dom";
 import { jsPDF } from "jspdf";
+import Protea from "../components/Assets/Protea.jpg";
 
 export default function ChatWithAnnie() {
   const [messages, setMessages] = useState([
@@ -146,7 +147,7 @@ useEffect(() => {
       {/* Sidebar */}
       <div className="chat-sidebar">
         <div className="sidebar-header">
-          <h3>Conversation with Annie</h3>
+          <h3>Conversations</h3>
         </div>
         <div className="chat-list">
           <div className="chat-item active">
@@ -173,9 +174,17 @@ useEffect(() => {
     )}
       <div className="chat-main">
         <div className="chat-header">
-            <div className="chat-header-left">
-              <h3>Annie Chat {isInProfessionalMode && "👨‍⚕️ Professional Support"}</h3>
-            </div>
+            <div className="chat-header-left" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+  <h3 style={{ margin: 0 }}>
+    Annie Chat {isInProfessionalMode && "👨‍⚕️ Professional Support"}
+  </h3>
+  <img
+    src={Protea}
+    alt="VEA logo"
+    style={{ width: "40px", transform: "rotate(55deg)" }}
+  />
+</div>
+
 
             <div className="chat-header-right">
               <div className="chat-header-right">
@@ -197,17 +206,24 @@ useEffect(() => {
             </div>
           </div>
 
-        <div className="chat-window">
-       {messages.map((msg, i) => (
-        <AgentMessage
-          key={i}
-          sender={msg.sender}
-          text={msg.text}
-          file={msg.file}
-          recorded={msg.recorded}
-          mockConsent={msg.mockConsent}
-        />
-      ))}
+         <div className="chat-window">
+  {messages.map((msg, i) => (
+    <AgentMessage
+      key={i}
+      sender={
+        msg.sender === "bob"
+          ? "user"
+          : msg.sender === "annie"
+          ? "bot"
+          : "professional"
+      }
+      text={msg.text}
+      file={msg.file}
+      recorded={msg.recorded}
+      mockConsent={msg.mockConsent}
+    />
+  ))}
+
 
 
 
