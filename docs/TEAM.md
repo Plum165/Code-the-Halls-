@@ -8,10 +8,10 @@ Code the Halls❄
 ## 👥 Members
 | Name     | Role                | Email |
 |----------|---------------------|-------------|
-| **Jawahier Achmat**   | Project Manager / Leader / Frontend Developer   | achjaw001@myuct.ac.za |
+| **Jawahier Achmat**   | Project Manager / Co - Leader /Lead Frontend Developer   | achjaw001@myuct.ac.za |
 | **Nikita Martin**   | Frontend / Backend Developer   | mrtnik003@myuct.ac.za |
 | **Moegamat Samsodien**   | Lead Backend Developer  | rashaadsm2004@gmail.com |
-| **Nooriya Shaik**   | Leader / Designer / Lead Frontend Developer  | shknoo003@myuct.ac.za |
+| **Nooriya Shaik**   | Co - Leader / Designer / Frontend Developer  | shknoo003@myuct.ac.za |
 
 
 ## 📧 Other Info
