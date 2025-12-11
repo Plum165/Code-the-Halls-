@@ -20,12 +20,10 @@ Follow the SETUP.md
 6. Export the chat as a PDF using the "Export chat" button
 ```
 ## 🎥 Demo
-``` c
-// TODO: Link your demo video and PowerPoint here
 
 Check out the Demos: 
 - [Demo Video](https://vimeo.com/manage/videos/1145755896)
-```
+
 
 ## 📌 Notes
 ``` c
